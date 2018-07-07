@@ -10,7 +10,7 @@ This repository includes the code for the backend API Server and the frontend re
     - `cd api-server`
     - `npm install`
     - `node server`
-* In another terminal window, use Create React App to scaffold out the front-end
+* In another terminal window, start the front-end
     - `cd frontend`
     - `npm start`
 
