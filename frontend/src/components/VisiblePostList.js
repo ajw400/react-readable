@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { fetchPosts, openPost, removePost, orderByDate, orderByVotes, fetchComments, fetchCategories, submitPost, submitComment, removeComment, expandPost, collapsePost, setCategoryFilter, upvotePost, downvotePost, upvoteComment, downvoteComment } from '../actions'
 import PostList from './PostList'
+import { withRouter } from 'react-router-dom'
 
 const getVisiblePosts = (posts, category, postOrder) => {
   let newposts = []
@@ -59,8 +60,8 @@ const mapDispatchToProps = dispatch => {
     collapsePost: post => {
       dispatch(collapsePost(post.id))
     },
-    openPost: post => {
-      dispatch(openPost(post.id))
+    openPost: postId => {
+      dispatch(openPost(postId))
     },
     upvotePost: post => {
       dispatch(upvotePost(post.id))
@@ -89,9 +90,9 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const VisiblePostList = connect(
+const VisiblePostList = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(PostList)
+)(PostList))
 
 export default VisiblePostList

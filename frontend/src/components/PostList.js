@@ -7,6 +7,8 @@ import { Table } from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import PostForm from './PostForm'
 import { RingLoader } from 'react-spinners'
+import { Route } from 'react-router-dom'
+import PostDetail from './PostDetail'
 
 class PostList extends Component {
   constructor(props) {
@@ -25,6 +27,25 @@ class PostList extends Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handlePostSubmit = this.handlePostSubmit.bind(this)
 
+  }
+
+  getVisiblePosts(posts, category, postOrder) {
+    let newposts = []
+    if (category === 'all') {
+      Object.keys(posts).map((key, index) => {
+        if (!posts[key].deleted) {
+          newposts.push(posts[key])
+        }
+      })
+    } else {
+      Object.keys(posts).map((key, index) => {
+        if (posts[key].category === category && !posts[key].deleted){
+          newposts.push(posts[key])
+        }
+      })
+    }
+    const sortedposts = newposts.sort((a, b) => (Number(b[postOrder]) - Number(a[postOrder])))
+    return sortedposts
   }
 
   openPostForm(post = {}) {
@@ -56,7 +77,6 @@ class PostList extends Component {
 
   handleInputChange(event) {
     const { name, value } = event.target;
-    console.log(event.target.name)
     this.setState({
       [name]: value
     })
@@ -69,49 +89,116 @@ class PostList extends Component {
   }
 
   render() {
-    const { fetchPosts, orderByDate, orderByVotes, removePost, isLoading, postArray, onSubmitComment, onSubmitPost, posts, removeComment, upvotePost, downvotePost, upvoteComment, downvoteComment, comments, categories, openPost, collapsePost, onCategoryClick, expandedPostId } = this.props
-    const { title, author, body, category, postFormOpen } = this.state
+    const { fetchPosts, orderByDate, orderByVotes, removePost, isLoading, postArray, onSubmitComment, onSubmitPost, posts, removeComment, upvotePost, downvotePost, upvoteComment, downvoteComment, comments, categories, openPost, collapsePost, onCategoryClick, postOrder, expandedPostId } = this.props
+    const { title, author, body, postFormOpen } = this.state
     return (
       <div>
-      <CategorySelector onCategoryClick={onCategoryClick} categories={categories} />
-      <PostForm
-        categories={categories}
-        onSubmitPost={this.onSubmitPost}
-        handleInputChange={this.handleInputChange}
-        closePostForm={this.closePostForm}
-        openPostForm={this.openPostForm}
-        handlePostSubmit={this.handlePostSubmit}
-        title = { title }
-        author = { author }
-        body = { body }
-        category={category}
-        open={postFormOpen}
-      />
-      <Table hover>
-        <ListHeader
-          orderByDate={orderByDate}
-          orderByVotes={orderByVotes}
-        />
-        <tbody>
-       {postArray.map((post) => (
-            <Post
-              removeComment={removeComment}
-              key={post.id}
-              onSubmitComment={onSubmitComment}
-              expandPost={openPost}
-              removePost={removePost}
-              upvoteComment={upvoteComment}
-              downvoteComment={downvoteComment}
-              upvotePost={upvotePost}
-              downvotePost={downvotePost}
-              comments={comments}
-              collapsePost={collapsePost}
-              expandedPostId={expandedPostId}
+      <Route exact path="/:category" render={(props) => (
+            <div>
+            <CategorySelector categories={categories} onCategoryClick={onCategoryClick} />
+            <PostForm
+              categories={categories}
+              onSubmitPost={this.onSubmitPost}
+              handleInputChange={this.handleInputChange}
+              closePostForm={this.closePostForm}
               openPostForm={this.openPostForm}
-              post={posts[post.id]} />
-            ))}
-        </tbody>
-      </Table>
+              handlePostSubmit={this.handlePostSubmit}
+              title = { title }
+              author = { author }
+              body = { body }
+              category={props.match.params.category}
+              open={postFormOpen}
+            />
+            <Table hover>
+              <ListHeader
+                orderByDate={orderByDate}
+                orderByVotes={orderByVotes}
+              />
+              <tbody>
+             {this.getVisiblePosts(posts, props.match.params.category, postOrder).map((post) => (
+                  <Post
+                    removeComment={removeComment}
+                    key={post.id}
+                    onSubmitComment={onSubmitComment}
+                    expandPost={openPost}
+                    removePost={removePost}
+                    upvoteComment={upvoteComment}
+                    downvoteComment={downvoteComment}
+                    upvotePost={upvotePost}
+                    downvotePost={downvotePost}
+                    comments={comments}
+                    collapsePost={collapsePost}
+                    expandedPostId={expandedPostId}
+                    openPostForm={this.openPostForm}
+                    post={posts[post.id]} />
+                  ))}
+              </tbody>
+            </Table>
+            </div>
+        )}/>
+        <Route exact path="/" render={() => (
+            <div>
+            <CategorySelector categories={categories} />
+            <PostForm
+              onCategoryCLick={onCategoryClick}
+              categories={categories}
+              onSubmitPost={this.onSubmitPost}
+              handleInputChange={this.handleInputChange}
+              closePostForm={this.closePostForm}
+              openPostForm={this.openPostForm}
+              handlePostSubmit={this.handlePostSubmit}
+              title = { title }
+              author = { author }
+              body = { body }
+              category={"all"}
+              open={postFormOpen}
+            />
+            <Table hover>
+              <ListHeader
+                orderByDate={orderByDate}
+                orderByVotes={orderByVotes}
+              />
+              <tbody>
+             {this.getVisiblePosts(posts, "all", postOrder).map((post) => (
+                  <Post
+                    removeComment={removeComment}
+                    key={post.id}
+                    onSubmitComment={onSubmitComment}
+                    expandPost={openPost}
+                    removePost={removePost}
+                    upvoteComment={upvoteComment}
+                    downvoteComment={downvoteComment}
+                    upvotePost={upvotePost}
+                    downvotePost={downvotePost}
+                    comments={comments}
+                    collapsePost={collapsePost}
+                    expandedPostId={expandedPostId}
+                    openPostForm={this.openPostForm}
+                    post={posts[post.id]} />
+                  ))}
+              </tbody>
+            </Table>
+            </div>
+        )}/>
+        <Route path="/:category/:postId" render={(props) => (
+          <PostDetail
+                    post={posts[props.match.params.postId]}
+                    category={props.match.params.category}
+                    postId={props.match.params.postId}
+                    removeComment={removeComment}
+                    onSubmitComment={onSubmitComment}
+                    openPost={openPost}
+                    removePost={removePost}
+                    upvoteComment={upvoteComment}
+                    downvoteComment={downvoteComment}
+                    upvotePost={upvotePost}
+                    downvotePost={downvotePost}
+                    comments={comments}
+                    collapsePost={collapsePost}
+                    openPostForm={this.openPostForm}
+                    posts={posts}
+                    />
+          )}/>
       </div>
       )
   }

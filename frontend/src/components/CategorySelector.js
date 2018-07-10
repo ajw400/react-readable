@@ -8,7 +8,7 @@ const CategorySelector = ({ categories, onCategoryClick }) => {
     <div>
           <p>Select a category
         <Nav>
-          {categories.map(cat => <Category key={cat} onCategoryClick={onCategoryClick} categoryName={cat} />)}
+          {categories.map(cat => <Category key={cat} categoryName={cat} onCategoryClick={onCategoryClick} />)}
         </Nav>
         </p>
     </div>

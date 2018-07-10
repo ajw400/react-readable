@@ -1,16 +1,15 @@
 import React from 'react'
 import { Component } from 'react'
-import { Link } from 'react-router-dom'
-import { Nav, NavLink} from 'reactstrap'
+import { Link, Redirect } from 'react-router-dom'
+import { Nav, NavLink, Table} from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import Comment from './Comment'
 import { timeConverter } from '../utils/helper'
 import Modal from 'react-modal'
 import CommentForm from './CommentForm'
+import ListHeader from './ListHeader'
 
-
-
-class Post extends Component {
+class PostDetail extends Component {
   constructor(props) {
     super(props)
 
@@ -25,6 +24,10 @@ class Post extends Component {
     this.openCommentForm = this.openCommentForm.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.openPost(this.props.postId)
   }
 
   handleInputChange(event) {
@@ -56,7 +59,9 @@ class Post extends Component {
   }
 
   render() {
-    const { post,
+    const {
+      posts,
+      postId,
       expandPost,
       upvoteComment,
       downvoteComment,
@@ -71,26 +76,30 @@ class Post extends Component {
       comments} = this.props
     const { commentFormOpen } = this.state
 
-    if (post.id !== expandedPostId) {
+    const post = { ...posts[postId] }
+     if (!post.id || post.deleted) {
+        return <Redirect to='/' />
+      }
       return (
-          <tr>
-            <td>{post.title}</td>
-            <td>{post.author}</td>
-            <td>{timeConverter(post.timestamp)}</td>
-            <td>{post.voteScore}</td>
-            <td>{post.commentCount}</td>
-            <td><Link to={`/${post.category}/${post.id}`}>details</Link></td>
-          </tr>
-        )
-    } else {
-      return (
+        <Table>
+            <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Votes</th>
+                    <th>Comments</th>
+                  </tr>
+            </thead>
           <tr>
             <td>
               <h3>{post.title}</h3>
               <p>{post.body}</p>
               <Nav>
-                <NavLink href="#" onClick={() => collapsePost(post)}>
-                  collapse
+                <NavLink>
+                <Link to="/">
+                  back to list
+                </Link>
                 </NavLink>
                 <NavLink href="#" onClick={() => upvotePost(post)}>
                   upvote
@@ -108,6 +117,7 @@ class Post extends Component {
                   delete
                 </NavLink>
               </Nav>
+              <hr/>
               <CommentForm
                 postId={post.id}
                 handleInputChange={this.handleInputChange}
@@ -119,6 +129,7 @@ class Post extends Component {
               {Object.keys(comments).map((key, index) => {
                 if (comments[key].parentId === post.id) {
                   return <Comment
+                    key={comments[key].id}
                     upvoteComment={upvoteComment}
                     removeComment={removeComment}
                     editComment={this.openCommentForm}
@@ -132,9 +143,10 @@ class Post extends Component {
             <td>{post.voteScore}</td>
             <td>{post.commentCount}</td>
           </tr>
+        </Table>
       )
     }
   }
-}
 
-export default Post
+
+export default PostDetail

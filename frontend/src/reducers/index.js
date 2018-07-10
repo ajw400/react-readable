@@ -17,7 +17,8 @@ import {
   RECEIVE_COMMENTS,
   ORDER_BY_DATE,
   ORDER_BY_VOTES,
-  MARK_POST_DELETED
+  MARK_POST_DELETED,
+  MARK_COMMENT_DELETED
    } from '../actions'
 
 export const guidGenerator = () => {
@@ -186,7 +187,7 @@ function comments(state = {}, action) {
           deleted: false
         }
       }
-    case REMOVE_COMMENT:
+    case MARK_COMMENT_DELETED:
       return {
         ...state,
         [action.commentId]: {

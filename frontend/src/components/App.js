@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Banner from './Banner'
 import VisiblePostList from './VisiblePostList'
 import { getPosts, getCategories } from '../utils/api'
+import { Route } from 'react-router-dom'
 
 
 class App extends Component {
@@ -19,10 +20,10 @@ class App extends Component {
 
   render() {
     return (
-      <div className='container'>
-        <Banner />
-        <VisiblePostList />
-      </div>
+        <div className='container'>
+          <Banner />
+          <VisiblePostList />
+        </div>
       )
   }
 }

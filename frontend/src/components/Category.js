@@ -1,12 +1,13 @@
 import React from 'react'
 import { Jumbotron, Button, Nav, NavItem, NavLink } from 'reactstrap'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Category = ({ categoryName, onCategoryClick }) => {
   return (
-      <NavItem>
-        <NavLink href="#" onClick={(e) => onCategoryClick(categoryName)}>{categoryName}</NavLink>
-      </NavItem>
+      <NavLink>
+        <Link to={`/${categoryName}`}>{categoryName}</Link>
+      </NavLink>
   )}
 
 Category.propTypes = {

@@ -23,6 +23,7 @@ export const OPEN_POST = 'OPEN_POST'
 export const ORDER_BY_DATE = 'ORDER_BY_DATE'
 export const ORDER_BY_VOTES = 'ORDER_BY_VOTES'
 export const MARK_POST_DELETED = 'MARK_POST_DELETED'
+export const MARK_COMMENT_DELETED = 'MARK_COMMENT_DELETED'
 
 export function orderByVotes() {
   return {
@@ -142,7 +143,6 @@ export function openPost (postId) {
   return (dispatch) => {
     getComments(postId)
     .then(comments => dispatch(receiveComments(comments)))
-    .then(post => dispatch(expandPost(postId)))
   }
 }
 
@@ -222,8 +222,15 @@ export function submitComment ({ parentId, body, author, id }) {
 }
 
 export function removeComment (commentId) {
+  return (dispatch) => {
+    remove("comments", commentId)
+    .then(() => dispatch(markCommentDeleted(commentId)))
+  }
+}
+
+export function markCommentDeleted (commentId) {
   return {
-    type: REMOVE_COMMENT,
+    type: MARK_COMMENT_DELETED,
     commentId
   }
 }

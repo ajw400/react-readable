@@ -4,7 +4,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 
 const PostForm = ({ author, open, body, title, categories, openPostForm, closePostForm, category, handleInputChange, handlePostSubmit }) => {
-    console.log("categories", categories)
     return (
       <div>
         <NavLink href="#" onClick={openPostForm}>New</NavLink>
