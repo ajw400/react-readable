@@ -5,7 +5,6 @@ import { Nav, NavLink, Table} from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import Comment from './Comment'
 import { timeConverter } from '../utils/helper'
-import Modal from 'react-modal'
 import CommentForm from './CommentForm'
 import ListHeader from './ListHeader'
 
@@ -49,7 +48,6 @@ class PostDetail extends Component {
     })
   }
   openCommentForm(comment) {
-    console.log(comment)
     this.setState({
       commentFormOpen: true,
       author: comment.author,
@@ -78,6 +76,7 @@ class PostDetail extends Component {
 
     const post = { ...posts[postId] }
      if (!post.id || post.deleted) {
+        alert("post not found")
         return <Redirect to='/' />
       }
       return (

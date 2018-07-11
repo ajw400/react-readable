@@ -1,6 +1,6 @@
 import React from 'react'
 import { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect, withRouter } from 'react-router-dom'
 import { Nav, NavLink} from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import Comment from './Comment'
@@ -25,7 +25,12 @@ class Post extends Component {
     this.openCommentForm = this.openCommentForm.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
+    this.navigate = this.navigate.bind(this)
   }
+
+  navigate(link) {
+    this.props.history.push(link)
+    }
 
   handleInputChange(event) {
     const { name, value } = event.target;
@@ -72,8 +77,9 @@ class Post extends Component {
     const { commentFormOpen } = this.state
 
     if (post.id !== expandedPostId) {
+      console.log(this)
       return (
-          <tr>
+          <tr onClick={() => this.navigate(`/${post.category}/${post.id}`)}>
             <td>{post.title}</td>
             <td>{post.author}</td>
             <td>{timeConverter(post.timestamp)}</td>
@@ -137,4 +143,4 @@ class Post extends Component {
   }
 }
 
-export default Post
+export default withRouter(Post)
