@@ -5,7 +5,6 @@ import { Nav, NavLink} from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import Comment from './Comment'
 import { timeConverter } from '../utils/helper'
-import Modal from 'react-modal'
 import CommentForm from './CommentForm'
 
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Component } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link, Redirect, withRouter } from 'react-router-dom'
 import { Nav, NavLink, Table} from 'reactstrap'
 import { PropTypes } from 'prop-types'
 import Comment from './Comment'
@@ -73,9 +73,10 @@ class PostDetail extends Component {
       openPostForm,
       comments} = this.props
     const { commentFormOpen } = this.state
-
+    console.log(this.props)
     const post = { ...posts[postId] }
      if (!post.id || post.deleted) {
+        console.log("in if", post.id, post, post.deleted)
         alert("post not found")
         return <Redirect to='/' />
       }
@@ -109,7 +110,7 @@ class PostDetail extends Component {
                 <NavLink href="#" onClick={() => this.openCommentForm({})}>
                   comment
                 </NavLink>
-                <NavLink href="#" onClick={() => openPostForm(post)}>
+                <NavLink href="#" onClick={() => {openPostForm(post); this.props.history.push('/')}}>
                   edit
                 </NavLink>
                 <NavLink href="#" onClick={() => removePost(post)}>
@@ -148,4 +149,4 @@ class PostDetail extends Component {
   }
 
 
-export default PostDetail
+export default withRouter(PostDetail)
